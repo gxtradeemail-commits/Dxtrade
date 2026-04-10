@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DXTRADE | Bot Trading Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050811; --surface: #0a1120; --surface2: #0f1a2e;
+            --border: rgba(99,179,237,0.12); --accent: #3b82f6; --accent2: #6366f1;
+            --green: #10b981; --red: #ef4444; --text: #f0f6ff; --muted: #4a6080;
+            --card: rgba(15,26,46,0.9);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Syne',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; }
+        body::before {
+            content:''; position:fixed; inset:0;
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59,130,246,0.08) 0%, transparent 70%),
+                        radial-gradient(ellipse 40% 30% at 90% 80%, rgba(99,102,241,0.06) 0%, transparent 60%);
+            pointer-events:none; z-index:0;
+        }
+        #loading-screen {
+            position:fixed; inset:0; z-index:200; background:var(--bg);
+            display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+            transition:opacity 0.4s ease;
+        }
+        .loader-ring { width:48px; height:48px; border:3px solid rgba(59,130,246,0.2); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .loader-text { font-family:'Space Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:0.3em; animation:blink 1.4s ease-in-out infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        #app { max-width:430px; margin:0 auto; padding:0 0 90px; position:relative; z-index:1; }
+        #app-header { display:flex; justify-content:space-between; align-items:center; padding:20px 20px 0; }
+        .logo { font-family:'Space Mono',monospace; font-size:20px; font-weight:700; letter-spacing:0.08em; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        #user-pill { display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); padding:6px 14px; border-radius:100px; font-size:11px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--text); cursor:pointer; }
+        .online-dot { width:6px; height:6px; background:var(--green); border-radius:50%; animation:blink 2s ease-in-out infinite; }
+        #screen-content { padding:20px; }
+        .card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:24px; backdrop-filter:blur(12px); }
+        .card-sm { padding:18px; border-radius:16px; }
+        .balance-card {
+            background:linear-gradient(135deg,#1a3a6e 0%,#1e2d6b 40%,#0f1a2e 100%);
+            border:1px solid rgba(99,179,237,0.2); border-radius:24px; padding:28px; position:relative; overflow:hidden;
+        }
+        .balance-card::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; background:radial-gradient(circle,rgba(99,102,241,0.3) 0%,transparent 70%); border-radius:50%; }
+        .balance-card::after  { content:''; position:absolute; bottom:-30px; left:-20px; width:120px; height:120px; background:radial-gradient(circle,rgba(59,130,246,0.2) 0%,transparent 70%); border-radius:50%; }
+        .bal-label { font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:rgba(191,219,254,0.7); margin-bottom:6px; }
+        .bal-amount { font-family:'Space Mono',monospace; font-size:36px; font-weight:700; color:#fff; position:relative; z-index:1; line-height:1.1; }
+        .bal-sub { font-family:'Space Mono',monospace; font-size:12px; color:rgba(191,219,254,0.4); margin-top:4px; position:relative; z-index:1; }
+        .bal-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:22px; }
+        .bal-btn { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); color:#fff; padding:12px; border-radius:12px; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.04em; }
+        .bal-btn:hover { background:rgba(255,255,255,0.18); transform:translateY(-1px); }
+        .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+        .stat-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; }
+        .stat-label { font-size:9px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+        .stat-value { font-family:'Space Mono',monospace; font-size:20px; font-weight:700; }
+        .stat-value.green { color:var(--green); }
+        .section-title { font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin:24px 0 12px; }
+        .bot-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:22px; margin-bottom:14px; transition:border-color 0.2s,transform 0.2s; }
+        .bot-card:hover { border-color:rgba(99,179,237,0.25); transform:translateY(-2px); }
+        .bot-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; }
+        .bot-icon { font-size:32px; }
+        .roi-badge { background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); color:var(--accent); font-family:'Space Mono',monospace; font-size:10px; font-weight:700; padding:5px 10px; border-radius:100px; }
+        .bot-name { font-size:18px; font-weight:800; margin-bottom:4px; }
+        .bot-meta { font-size:11px; color:var(--muted); margin-bottom:16px; font-family:'Space Mono',monospace; }
+        .bot-buy-row { display:flex; gap:10px; }
+        .input-field { flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:12px 14px; border-radius:12px; font-family:'Space Mono',monospace; font-size:13px; outline:none; transition:border-color 0.2s; }
+        .input-field:focus { border-color:var(--accent); }
+        .input-field::placeholder { color:var(--muted); }
+        .btn-primary { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; border:none; padding:12px 20px; border-radius:12px; font-family:'Syne',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; letter-spacing:0.04em; }
+        .btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+        .btn-full { width:100%; padding:16px; border-radius:14px; font-size:15px; letter-spacing:0.06em; }
+        .btn-ghost { background:transparent; border:none; color:var(--muted); font-family:'Syne',sans-serif; font-size:13px; cursor:pointer; padding:8px; transition:color 0.2s; }
+        .btn-ghost:hover { color:var(--text); }
+        .auth-wrap { padding:32px 0 16px; }
+        .auth-logo { text-align:center; margin-bottom:32px; }
+        .auth-logo .logo { font-size:28px; }
+        .auth-subtitle { font-size:13px; color:var(--muted); margin-top:6px; }
+        .form-group { margin-bottom:14px; }
+        .form-label { display:block; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+        .form-input { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:14px 18px; border-radius:14px; font-family:'Syne',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
+        .form-input:focus { border-color:var(--accent); }
+        .form-input::placeholder { color:var(--muted); }
+        select.form-input { appearance:none; -webkit-appearance:none; cursor:pointer; }
+        #navbar { position:fixed; bottom:0; left:0; right:0; max-width:430px; margin:0 auto; background:rgba(5,8,17,0.95); backdrop-filter:blur(20px); border-top:1px solid var(--border); padding:14px 24px 20px; display:flex; justify-content:space-around; align-items:center; z-index:50; }
+        .nav-btn { display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:none; cursor:pointer; color:var(--muted); transition:color 0.2s; padding:4px 12px; }
+        .nav-btn.active { color:var(--accent); }
+        .nav-btn:hover { color:var(--text); }
+        .nav-label { font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+        .ref-code-box { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px; display:flex; justify-content:space-between; align-items:center; margin:12px 0; }
+        .ref-code { font-family:'Space Mono',monospace; font-size:20px; font-weight:700; color:var(--accent); letter-spacing:0.1em; }
+        .copy-btn { background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); color:var(--accent); padding:8px 16px; border-radius:10px; font-family:'Syne',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+        .copy-btn:hover { background:rgba(59,130,246,0.2); }
+        .history-item { display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-bottom:1px solid var(--border); }
+        .history-item:last-child { border-bottom:none; }
+        .history-icon { width:40px; height:40px; background:var(--surface2); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:16px; margin-right:14px; flex-shrink:0; }
+        .history-info { flex:1; }
+        .history-title { font-size:13px; font-weight:700; }
+        .history-date { font-size:10px; color:var(--muted); font-family:'Space Mono',monospace; margin-top:2px; }
+        .history-amount { font-family:'Space Mono',monospace; font-size:14px; font-weight:700; text-align:right; }
+        .history-status { font-size:9px; letter-spacing:0.1em; text-transform:uppercase; text-align:right; margin-top:2px; }
+        .badge { display:inline-block; padding:3px 10px; border-radius:100px; font-size:9px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+        .badge-green  { background:rgba(16,185,129,0.12);  color:var(--green);  border:1px solid rgba(16,185,129,0.2); }
+        .badge-yellow { background:rgba(234,179,8,0.12);   color:#eab308;       border:1px solid rgba(234,179,8,0.2); }
+        .badge-red    { background:rgba(239,68,68,0.12);   color:var(--red);    border:1px solid rgba(239,68,68,0.2); }
+        .badge-blue   { background:rgba(59,130,246,0.12);  color:var(--accent); border:1px solid rgba(59,130,246,0.2); }
+        /* Exchange rate card */
+        .rate-card { background:rgba(16,185,129,0.05); border:1px solid rgba(16,185,129,0.18); border-radius:16px; padding:18px; margin:14px 0; }
+        .rate-card-title { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--green); margin-bottom:12px; }
+        .rate-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; }
+        .rate-row + .rate-row { border-top:1px solid rgba(16,185,129,0.08); }
+        .rate-key { font-size:12px; color:rgba(191,219,254,0.55); }
+        .rate-val { font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:var(--text); }
+        /* Bank box */
+        .bank-box { background:var(--surface); border:1px dashed rgba(99,179,237,0.22); border-radius:14px; padding:18px; margin:10px 0; }
+        .bank-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; }
+        .bank-row + .bank-row { border-top:1px solid rgba(99,179,237,0.07); }
+        .bank-key { font-size:11px; color:var(--muted); }
+        .bank-val { font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:var(--text); }
+        /* Calc hint */
+        .calc-hint { font-size:11px; color:rgba(191,219,254,0.38); font-family:'Space Mono',monospace; margin-top:6px; min-height:18px; transition:color 0.2s; }
+        .calc-hint.active { color:var(--green); }
+        .info-box { background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.15); border-radius:14px; padding:16px; margin:14px 0; }
+        .info-box p { font-size:12px; color:rgba(191,219,254,0.8); line-height:1.65; }
+        .inv-card { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; margin-bottom:12px; }
+        .inv-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+        .progress-bar-bg { background:var(--surface); border-radius:100px; height:5px; overflow:hidden; margin-top:8px; }
+        .progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:100px; transition:width 0.4s ease; }
+        .admin-section { margin-bottom:28px; }
+        .admin-section-title { font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); padding-bottom:10px; border-bottom:1px solid var(--border); margin-bottom:14px; }
+        .admin-user-row { display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid rgba(51,65,85,0.3); }
+        .admin-user-row:last-child { border-bottom:none; }
+        .admin-banner { background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(59,130,246,0.1)); border:1px solid rgba(99,102,241,0.25); border-radius:14px; padding:14px 18px; display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+        .admin-banner-icon { font-size:20px; }
+        .admin-banner-text { font-size:12px; font-weight:600; color:rgba(191,219,254,0.9); }
+        .page-title { font-size:22px; font-weight:800; margin-bottom:4px; }
+        .page-sub   { font-size:12px; color:var(--muted); margin-bottom:20px; }
+        #toast { position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:12px 24px; border-radius:100px; font-size:13px; font-weight:600; opacity:0; transition:all 0.3s ease; z-index:100; white-space:nowrap; pointer-events:none; }
+        #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+        .divider { border:none; border-top:1px solid var(--border); margin:20px 0; }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        .fade-up { animation:fadeUp 0.35s ease forwards; }
+        .empty-state { text-align:center; padding:48px 24px; }
+        .empty-icon  { font-size:42px; margin-bottom:12px; opacity:0.4; }
+        .empty-text  { font-size:13px; color:var(--muted); }
+    </style>
+</head>
+<body>
+
+<div id="loading-screen">
+    <div class="loader-ring"></div>
+    <p class="loader-text">SYNCING · DXTRADE</p>
+</div>
+<div id="toast"></div>
+
+<div id="app">
+    <header id="app-header" style="display:none;">
+        <span class="logo">DXTRADE</span>
+        <div id="user-pill" onclick="router('profile')">
+            <span class="online-dot"></span>
+            <span id="display-name"></span>
+        </div>
+    </header>
+    <main id="screen-content"></main>
+</div>
+
+<nav id="navbar" style="display:none;">
+    <button class="nav-btn" id="nav-dashboard" onclick="router('dashboard')">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-btn" id="nav-bots" onclick="router('bots')">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+        <span class="nav-label">Bots</span>
+    </button>
+    <button class="nav-btn" id="nav-referral" onclick="router('referral')">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="nav-label">Refer</span>
+    </button>
+    <button class="nav-btn" id="nav-history" onclick="router('history')">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5M12 7v5l4 2"/></svg>
+        <span class="nav-label">History</span>
+    </button>
+    <button class="nav-btn" id="nav-profile" onclick="router('profile')">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span class="nav-label">Profile</span>
+    </button>
+</nav>
+
+<script>
+// ─── CONFIG ────────────────────────────────────────────────────────────────
+const API_URL  = "https://script.google.com/macros/s/AKfycbwdcIFJP-0HQuDv8A26Sw_cHWL-kZy9Vz-_ZGCEwhXL3pE1qulHVscAqe3mNlfeVpI/exec";
+const DEP_RATE = 1470;   // ₦1,470 = $1 USD  (user pays NGN → we credit USD)
+const WD_RATE  = 1360;   // $1 USD = ₦1,360  (we pay NGN ← user spends USD)
+
+const BANK = {
+    name:    "Opay",
+    accName: "DXTRADE INVESTMENT LTD",
+    accNum:  "8123456789"
+};
+
+let db = null, user = null, currentScreen = '';
+
+// ─── SYNC ──────────────────────────────────────────────────────────────────
+async function sync(action = 'GET') {
+    showLoader(true);
+    try {
+        if (action === 'GET') {
+            const r = await fetch(API_URL);
+            db = await r.json();
+        } else {
+            await fetch(API_URL, { method:'POST', mode:'no-cors', body:JSON.stringify(db) });
+            const r = await fetch(API_URL);
+            db = await r.json();
+        }
+        if (user) user = db.users.find(u => u.uid === user.uid);
+    } catch(e) {
+        console.error(e);
+        toast("⚠️ Connection error — check API URL.");
+    }
+    showLoader(false);
+}
+function showLoader(on) {
+    const el = document.getElementById('loading-screen');
+    el.style.opacity = on ? '1' : '0';
+    el.style.pointerEvents = on ? 'all' : 'none';
+}
+
+// ─── ROI ENGINE ───────────────────────────────────────────────────────────
+function processROI() {
+    if (!user) return;
+    let changed = false;
+    const now = Date.now();
+    db.investments.forEach(inv => {
+        if (inv.userId === user.uid && inv.status === 'active') {
+            const last = inv.lastUpdate || inv.startDate;
+            const days = (now - last) / 86400000;
+            if (days > 0.0001) {
+                const profit = inv.amount * inv.dailyROI * days;
+                const u2 = db.users.find(u => u.uid === inv.userId);
+                u2.balance      += profit;
+                inv.earnedTotal  = (inv.earnedTotal || 0) + profit;
+                inv.lastUpdate   = now;
+                inv.daysPassed   = (inv.daysPassed || 0) + days;
+                if (inv.daysPassed >= inv.durationDays) {
+                    inv.status = 'completed';
+                    u2.balance += inv.amount;
+                    db.history.push({ userId:inv.userId, type:'roi_complete', label:`${inv.planName} completed`, amount:inv.earnedTotal, date:now });
+                }
+                changed = true;
+            }
+        }
+    });
+    if (changed) sync('POST');
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────
+function toast(msg, ms=2800) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), ms);
+}
+const fmtUSD = n => '$' + Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtNGN = n => '₦' + Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const toUSD  = ngn => ngn / DEP_RATE;
+const toNGN  = usd => usd * WD_RATE;
+const fmtDate= ts  => new Date(ts).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'});
+function setActiveNav(id) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    const el = document.getElementById('nav-'+id);
+    if (el) el.classList.add('active');
+}
+function genUID() { return 'DX' + Math.random().toString(36).substr(2,6).toUpperCase(); }
+
+function calcDepHint() {
+    const v = parseFloat(document.getElementById('dep-ngn')?.value);
+    const h = document.getElementById('dep-hint');
+    if (!h) return;
+    if (!v || v <= 0) { h.textContent=''; h.className='calc-hint'; return; }
+    h.textContent = `≈ ${fmtUSD(toUSD(v))} will be credited to your account`;
+    h.className = 'calc-hint active';
+}
+function calcWdHint() {
+    const v = parseFloat(document.getElementById('wd-usd')?.value);
+    const h = document.getElementById('wd-hint');
+    if (!h) return;
+    if (!v || v <= 0) { h.textContent=''; h.className='calc-hint'; return; }
+    h.textContent = `≈ ${fmtNGN(toNGN(v))} will be sent to your bank`;
+    h.className = 'calc-hint active';
+}
+
+// ─── VIEWS ────────────────────────────────────────────────────────────────
+const views = {
+
+login: () => `
+<div class="auth-wrap fade-up">
+    <div class="auth-logo"><div class="logo">DXTRADE</div><p class="auth-subtitle">Login to your bot farm</p></div>
+    <div class="form-group"><label class="form-label">Email</label><input id="l-email" type="email" placeholder="you@example.com" class="form-input"></div>
+    <div class="form-group"><label class="form-label">Password</label><input id="l-pass" type="password" placeholder="••••••••" class="form-input"></div>
+    <button onclick="handleLogin()" class="btn-primary btn-full" style="margin-top:8px;">Sign In</button>
+    <div style="text-align:center;margin-top:20px;"><button onclick="router('signup')" class="btn-ghost">Don't have an account? <strong>Sign Up</strong></button></div>
+</div>`,
+
+signup: () => `
+<div class="auth-wrap fade-up">
+    <div class="auth-logo"><div class="logo">DXTRADE</div><p class="auth-subtitle">Create your account</p></div>
+    <div class="form-group"><label class="form-label">Full Name</label><input id="s-name" type="text" placeholder="Emmanuel James" class="form-input"></div>
+    <div class="form-group"><label class="form-label">Email</label><input id="s-email" type="email" placeholder="you@example.com" class="form-input"></div>
+    <div class="form-group"><label class="form-label">Password</label><input id="s-pass" type="password" placeholder="••••••••" class="form-input"></div>
+    <div class="form-group"><label class="form-label">Referral Code (Optional)</label><input id="s-ref" type="text" placeholder="e.g. DXN48DJG" class="form-input"></div>
+    <button onclick="handleSignup()" class="btn-primary btn-full" style="margin-top:8px;">Create Account</button>
+    <div style="text-align:center;margin-top:20px;"><button onclick="router('login')" class="btn-ghost">Already have an account? <strong>Sign In</strong></button></div>
+</div>`,
+
+dashboard: () => {
+    const activeInvs = db.investments.filter(i => i.userId===user.uid && i.status==='active');
+    const earned     = db.investments.filter(i => i.userId===user.uid).reduce((a,b)=>a+(b.earnedTotal||0),0);
+    const done       = db.investments.filter(i => i.userId===user.uid && i.status==='completed').length;
+    const pDep       = db.deposits.filter(d => d.userId===user.uid && d.status==='pending').length;
+    const pWd        = db.withdrawals.filter(w => w.userId===user.uid && w.status==='pending').length;
+    return `
+<div class="fade-up" style="padding-bottom:8px;">
+    <div class="balance-card">
+        <p class="bal-label">Available Balance</p>
+        <div class="bal-amount">${fmtUSD(user.balance)}</div>
+        <div class="bal-sub">≈ ${fmtNGN(toNGN(user.balance))} at withdrawal rate</div>
+        ${pDep>0?`<p style="font-size:11px;color:rgba(234,179,8,0.85);margin-top:8px;position:relative;z-index:1;">⏳ ${pDep} deposit${pDep>1?'s':''} pending approval</p>`:''}
+        <div class="bal-actions">
+            <button onclick="router('deposit')" class="bal-btn">+ Deposit</button>
+            <button onclick="router('withdraw')" class="bal-btn">− Withdraw</button>
+        </div>
+    </div>
+    <div class="stats-grid">
+        <div class="stat-card"><p class="stat-label">Active Bots</p><p class="stat-value">${activeInvs.length}</p></div>
+        <div class="stat-card"><p class="stat-label">Total Earned</p><p class="stat-value green">${fmtUSD(earned)}</p></div>
+        <div class="stat-card"><p class="stat-label">Completed</p><p class="stat-value">${done}</p></div>
+        <div class="stat-card"><p class="stat-label">Withdrawals</p><p class="stat-value" style="${pWd>0?'color:#eab308':''}">${pWd>0?pWd+' pending':db.withdrawals.filter(w=>w.userId===user.uid&&w.status==='approved').length+' done'}</p></div>
+    </div>
+    ${activeInvs.length>0?`
+    <p class="section-title">Running Bots</p>
+    ${activeInvs.map(inv=>{
+        const pct=Math.min(100,((inv.daysPassed||0)/inv.durationDays)*100).toFixed(1);
+        return `
+        <div class="inv-card">
+            <div class="inv-top">
+                <div><div style="font-size:14px;font-weight:800;">${inv.planName}</div><div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">${inv.durationDays}d · ${(inv.dailyROI*100)}%/day</div></div>
+                <div style="text-align:right;"><div style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;">${fmtUSD(inv.amount)}</div><div style="font-size:10px;color:var(--green);font-family:'Space Mono',monospace;">+${fmtUSD(inv.earnedTotal||0)}</div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:10px;color:var(--muted);">Progress</span><span style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;">${pct}%</span></div>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+        </div>`;
+    }).join('')}` :''}
+</div>`},
+
+bots: () => `
+<div class="fade-up">
+    <p class="page-title">Bot Marketplace</p>
+    <p class="page-sub">Enter amount in USD to activate a bot</p>
+    ${db.plans.map(p=>{
+        const minU=(p.minInvestment/DEP_RATE).toFixed(0);
+        const maxU=(p.maxInvestment/DEP_RATE).toFixed(0);
+        const estMin=((p.minInvestment/DEP_RATE)*p.dailyROI*p.durationDays).toFixed(2);
+        const estMax=((p.maxInvestment/DEP_RATE)*p.dailyROI*p.durationDays).toFixed(2);
+        return `
+        <div class="bot-card">
+            <div class="bot-header"><span class="bot-icon">${p.icon}</span><div style="text-align:right;"><span class="roi-badge">${p.dailyROI*100}% / day</span><div style="font-size:10px;color:var(--muted);margin-top:4px;font-family:'Space Mono',monospace;">${p.durationDays} days</div></div></div>
+            <div class="bot-name">${p.name}</div>
+            <div class="bot-meta">Min: $${minU} &nbsp;·&nbsp; Max: $${maxU}</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">Est. return: <span style="color:var(--green);font-weight:700;">$${estMin}</span> – <span style="color:var(--green);font-weight:700;">$${estMax}</span></div>
+            <div class="bot-buy-row">
+                <input id="buy-${p.id}" type="number" placeholder="Amount in USD" class="input-field">
+                <button onclick="handleBuy(${p.id})" class="btn-primary">BUY</button>
+            </div>
+        </div>`}).join('')}
+</div>`,
+
+deposit: () => `
+<div class="fade-up">
+    <p class="page-title">Deposit</p>
+    <p class="page-sub">Fund your account via Nigerian bank transfer</p>
+
+    <div class="rate-card">
+        <div class="rate-card-title">📊 Deposit Exchange Rate</div>
+        <div class="rate-row"><span class="rate-key">Rate</span><span class="rate-val">₦${DEP_RATE.toLocaleString()} = $1.00 USD</span></div>
+        <div class="rate-row"><span class="rate-key">Example — Send ₦14,700</span><span class="rate-val">→ Get $10.00</span></div>
+        <div class="rate-row"><span class="rate-key">Processing time</span><span class="rate-val">15 – 30 minutes</span></div>
+    </div>
+
+    <p class="section-title">Transfer to this account</p>
+    <div class="bank-box">
+        <div class="bank-row"><span class="bank-key">Bank</span><span class="bank-val">${BANK.name}</span></div>
+        <div class="bank-row"><span class="bank-key">Account Name</span><span class="bank-val">${BANK.accName}</span></div>
+        <div class="bank-row"><span class="bank-key">Account Number</span><span class="bank-val">${BANK.accNum}</span></div>
+    </div>
+    <button onclick="copyText('${BANK.accNum}','✅ Account number copied!')" class="copy-btn" style="width:100%;margin-bottom:6px;">Copy Account Number</button>
+
+    <p class="section-title">Submit Payment Proof</p>
+    <div class="form-group">
+        <label class="form-label">Amount Sent (₦ Naira)</label>
+        <input id="dep-ngn" type="number" placeholder="e.g. 14700" class="form-input" oninput="calcDepHint()">
+        <div class="calc-hint" id="dep-hint"></div>
+    </div>
+    <div class="form-group">
+        <label class="form-label">Transaction Reference / Receipt Number</label>
+        <input id="dep-ref" type="text" placeholder="Bank reference or session ID" class="form-input">
+    </div>
+    <button onclick="handleDeposit()" class="btn-primary btn-full">Submit Deposit Request</button>
+
+    ${db.deposits.filter(d=>d.userId===user.uid).length>0?`
+    <p class="section-title">Deposit History</p>
+    <div class="card card-sm">
+        ${db.deposits.filter(d=>d.userId===user.uid).slice().reverse().map(d=>`
+        <div class="history-item">
+            <div class="history-icon">🏦</div>
+            <div class="history-info">
+                <div class="history-title">Bank Transfer (NGN)</div>
+                <div class="history-date">${fmtDate(d.date)} · ${fmtNGN(d.ngnAmount)}</div>
+            </div>
+            <div>
+                <div class="history-amount" style="color:var(--green);">+${fmtUSD(d.amount)}</div>
+                <div class="history-status"><span class="badge ${d.status==='approved'?'badge-green':d.status==='pending'?'badge-yellow':'badge-red'}">${d.status}</span></div>
+            </div>
+        </div>`).join('')}
+    </div>`:''}
+</div>`,
+
+withdraw: () => `
+<div class="fade-up">
+    <p class="page-title">Withdraw</p>
+    <p class="page-sub">Receive NGN to your Nigerian bank account</p>
+
+    <div class="balance-card" style="padding:20px 24px;margin-bottom:20px;">
+        <p class="bal-label">Available Balance</p>
+        <div class="bal-amount" style="font-size:28px;">${fmtUSD(user.balance)}</div>
+        <div class="bal-sub">≈ ${fmtNGN(toNGN(user.balance))} at withdrawal rate</div>
+    </div>
+
+    <div class="rate-card">
+        <div class="rate-card-title">📊 Withdrawal Exchange Rate</div>
+        <div class="rate-row"><span class="rate-key">Rate</span><span class="rate-val">$1.00 USD = ₦${WD_RATE.toLocaleString()}</span></div>
+        <div class="rate-row"><span class="rate-key">Example — Withdraw $10</span><span class="rate-val">→ Receive ₦${(10*WD_RATE).toLocaleString()}</span></div>
+        <div class="rate-row"><span class="rate-key">Processing time</span><span class="rate-val">Within 24 hours</span></div>
+    </div>
+
+    <div class="info-box"><p>Minimum withdrawal is <strong>$1.00</strong>. Funds are sent as NGN to your Nigerian bank account.</p></div>
+
+    <div class="form-group">
+        <label class="form-label">Amount to Withdraw (USD)</label>
+        <input id="wd-usd" type="number" placeholder="Min: $1.00" class="form-input" oninput="calcWdHint()">
+        <div class="calc-hint" id="wd-hint"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Bank Name</label><input id="wd-bank" type="text" placeholder="e.g. Access Bank, GTBank, Opay…" class="form-input"></div>
+    <div class="form-group"><label class="form-label">Account Number</label><input id="wd-account" type="text" placeholder="10-digit NUBAN" class="form-input"></div>
+    <div class="form-group"><label class="form-label">Account Name</label><input id="wd-accname" type="text" placeholder="Full name on account" class="form-input"></div>
+    <button onclick="handleWithdraw()" class="btn-primary btn-full">Request Withdrawal</button>
+
+    ${db.withdrawals.filter(w=>w.userId===user.uid).length>0?`
+    <p class="section-title">Withdrawal History</p>
+    <div class="card card-sm">
+        ${db.withdrawals.filter(w=>w.userId===user.uid).slice().reverse().map(w=>`
+        <div class="history-item">
+            <div class="history-icon">💸</div>
+            <div class="history-info">
+                <div class="history-title">${w.bank||'Bank Transfer'}</div>
+                <div class="history-date">${fmtDate(w.date)} · ${fmtNGN(w.ngnAmount)}</div>
+            </div>
+            <div>
+                <div class="history-amount" style="color:var(--red);">-${fmtUSD(w.amount)}</div>
+                <div class="history-status"><span class="badge ${w.status==='approved'?'badge-green':w.status==='pending'?'badge-yellow':'badge-red'}">${w.status}</span></div>
+            </div>
+        </div>`).join('')}
+    </div>`:''}
+</div>`,
+
+referral: () => {
+    const refs = db.users.filter(u => u.referredBy === user.refCode);
+    const bonusU = toUSD(600);
+    return `
+<div class="fade-up">
+    <p class="page-title">Referral Program</p>
+    <p class="page-sub">Earn ${fmtUSD(bonusU)} for every friend you invite</p>
+    <div class="card" style="text-align:center;margin-bottom:20px;">
+        <p style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Your Referral Code</p>
+        <div class="ref-code-box"><span class="ref-code">${user.refCode}</span><button onclick="copyText('${user.refCode}','✅ Referral code copied!')" class="copy-btn">Copy</button></div>
+        <p style="font-size:11px;color:var(--muted);">Share your code and earn bonuses automatically</p>
+    </div>
+    <div class="stats-grid" style="margin-bottom:20px;">
+        <div class="stat-card"><p class="stat-label">Total Referred</p><p class="stat-value">${refs.length}</p></div>
+        <div class="stat-card"><p class="stat-label">Ref Earnings</p><p class="stat-value green">${fmtUSD(refs.length*bonusU)}</p></div>
+    </div>
+    ${refs.length>0?`
+    <p class="section-title">Referred Users</p>
+    <div class="card card-sm">
+        ${refs.map(r=>`
+        <div class="history-item">
+            <div class="history-icon">👤</div>
+            <div class="history-info"><div class="history-title">${r.name}</div><div class="history-date">${r.email}</div></div>
+            <span class="badge badge-green">+${fmtUSD(bonusU)}</span>
+        </div>`).join('')}
+    </div>`:`
+    <div class="empty-state"><div class="empty-icon">🔗</div><p class="empty-text">No referrals yet.<br>Share your code to start earning.</p></div>`}
+    <div class="info-box" style="margin-top:20px;"><p>📌 Every time a friend signs up using your code, you both receive a ${fmtUSD(bonusU)} welcome bonus instantly.</p></div>
+</div>`},
+
+history: () => {
+    const all = [
+        ...db.deposits.filter(d=>d.userId===user.uid).map(d=>({...d,type:'deposit',label:'Deposit · Bank Transfer',sign:'+',color:'var(--green)'})),
+        ...db.withdrawals.filter(w=>w.userId===user.uid).map(w=>({...w,type:'withdrawal',label:`Withdrawal · ${w.bank||'Bank'}`,sign:'-',color:'var(--red)'})),
+        ...db.investments.filter(i=>i.userId===user.uid).map(i=>({...i,type:'investment',date:i.startDate,label:`Bot: ${i.planName}`,sign:'-',color:'var(--muted)',amount:i.amount,status:'invested'})),
+        ...(db.history||[]).filter(h=>h.userId===user.uid).map(h=>({...h,sign:'+',color:'var(--green)'}))
+    ].sort((a,b)=>(b.date||0)-(a.date||0));
+    const ico={deposit:'🏦',withdrawal:'💸',investment:'🤖',roi_complete:'✅',referral_bonus:'🎁',adjustment:'⚙️',default:'📄'};
+    return `
+<div class="fade-up">
+    <p class="page-title">Transaction History</p>
+    <p class="page-sub">All your account activity</p>
+    ${all.length===0?`<div class="empty-state"><div class="empty-icon">📋</div><p class="empty-text">No transactions yet.<br>Make a deposit to get started.</p></div>`:`
+    <div class="card card-sm">
+        ${all.map(h=>`
+        <div class="history-item">
+            <div class="history-icon">${ico[h.type]||ico.default}</div>
+            <div class="history-info"><div class="history-title">${h.label||h.type}</div><div class="history-date">${fmtDate(h.date)}</div></div>
+            <div>
+                <div class="history-amount" style="color:${h.color||'var(--text)'};">${h.sign}${fmtUSD(h.amount)}</div>
+                ${h.status?`<div class="history-status"><span class="badge ${h.status==='approved'||h.status==='completed'?'badge-green':h.status==='pending'?'badge-yellow':h.status==='invested'?'badge-blue':'badge-red'}">${h.status}</span></div>`:''}
+            </div>
+        </div>`).join('')}
+    </div>`}
+</div>`},
+
+profile: () => `
+<div class="fade-up">
+    <p class="page-title">Profile</p><p class="page-sub">Your account details</p>
+    <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+            <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;">${user.name.charAt(0).toUpperCase()}</div>
+            <div>
+                <div style="font-size:16px;font-weight:800;">${user.name}</div>
+                <div style="font-size:12px;color:var(--muted);">${user.email}</div>
+                <div style="margin-top:4px;"><span class="badge badge-blue">${user.role.toUpperCase()}</span></div>
+            </div>
+        </div>
+        <hr class="divider">
+        <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-size:12px;color:var(--muted);">User ID</span><span style="font-family:'Space Mono',monospace;font-size:12px;">${user.uid}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-size:12px;color:var(--muted);">Balance (USD)</span><span style="font-family:'Space Mono',monospace;font-size:12px;color:var(--green);">${fmtUSD(user.balance)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-size:12px;color:var(--muted);">≈ NGN Value</span><span style="font-family:'Space Mono',monospace;font-size:12px;color:rgba(191,219,254,0.45);">${fmtNGN(toNGN(user.balance))}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-size:12px;color:var(--muted);">Ref Code</span><span style="font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);">${user.refCode}</span></div>
+        ${user.referredBy?`<div style="display:flex;justify-content:space-between;padding:10px 0;"><span style="font-size:12px;color:var(--muted);">Referred By</span><span style="font-family:'Space Mono',monospace;font-size:12px;">${user.referredBy}</span></div>`:''}
+    </div>
+    ${user.role==='admin'?`<button onclick="router('admin')" class="btn-primary btn-full" style="margin-bottom:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);">🛡 Admin Panel</button>`:''}
+    <button onclick="handleLogout()" style="width:100%;padding:16px;border-radius:14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--red);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.06em;transition:all 0.2s;" onmouseover="this.style.background='rgba(239,68,68,0.15)'" onmouseout="this.style.background='rgba(239,68,68,0.08)'">Sign Out</button>
+</div>`,
+
+admin: () => {
+    if (!user || user.role!=='admin') return views.dashboard();
+    const pDeps = db.deposits.filter(d=>d.status==='pending');
+    const pWds  = db.withdrawals.filter(w=>w.status==='pending');
+    return `
+<div class="fade-up">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <button onclick="router('profile')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;">←</button>
+        <p class="page-title" style="margin-bottom:0;">Admin Panel</p>
+    </div>
+    <div class="admin-banner"><span class="admin-banner-icon">🛡</span><span class="admin-banner-text">Administrator Access — Handle all requests carefully.</span></div>
+
+    <div class="stats-grid" style="margin-bottom:24px;">
+        <div class="stat-card"><p class="stat-label">Total Users</p><p class="stat-value">${db.users.length}</p></div>
+        <div class="stat-card"><p class="stat-label">Active Bots</p><p class="stat-value">${db.investments.filter(i=>i.status==='active').length}</p></div>
+        <div class="stat-card"><p class="stat-label">Pending Deposits</p><p class="stat-value" style="${pDeps.length>0?'color:#eab308':''}">${pDeps.length}</p></div>
+        <div class="stat-card"><p class="stat-label">Pending Withdrawals</p><p class="stat-value" style="${pWds.length>0?'color:#eab308':''}">${pWds.length}</p></div>
+    </div>
+
+    ${pDeps.length>0?`
+    <div class="admin-section">
+        <div class="admin-section-title">⏳ Pending Deposits (${pDeps.length})</div>
+        ${pDeps.map(d=>{const u=db.users.find(x=>x.uid===d.userId);return `
+        <div class="card card-sm" style="margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                <div><div style="font-size:13px;font-weight:800;">${u?u.name:'Unknown'}</div><div style="font-size:10px;color:var(--muted);">${u?u.email:''}</div></div>
+                <div style="text-align:right;"><div style="font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:var(--green);">+${fmtUSD(d.amount)}</div><div style="font-size:10px;color:var(--muted);">${fmtNGN(d.ngnAmount)} sent</div></div>
+            </div>
+            ${d.ref?`<div style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;background:var(--surface);padding:8px 12px;border-radius:8px;word-break:break-all;margin-bottom:8px;">Ref: ${d.ref}</div>`:''}
+            <div style="font-size:10px;color:var(--muted);margin-bottom:12px;">${fmtDate(d.date)}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button onclick="adminDeposit('${d.id}','approved')" style="padding:10px;border-radius:10px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:var(--green);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✓ Approve</button>
+                <button onclick="adminDeposit('${d.id}','rejected')" style="padding:10px;border-radius:10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--red);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✕ Reject</button>
+            </div>
+        </div>`}).join('')}
+    </div>`:`<div class="info-box" style="margin-bottom:20px;"><p>✅ No pending deposits.</p></div>`}
+
+    ${pWds.length>0?`
+    <div class="admin-section">
+        <div class="admin-section-title">⏳ Pending Withdrawals (${pWds.length})</div>
+        ${pWds.map(w=>{const u=db.users.find(x=>x.uid===w.userId);return `
+        <div class="card card-sm" style="margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                <div><div style="font-size:13px;font-weight:800;">${u?u.name:'Unknown'}</div><div style="font-size:10px;color:var(--muted);">${u?u.email:''}</div></div>
+                <div style="text-align:right;"><div style="font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:var(--red);">-${fmtUSD(w.amount)}</div><div style="font-size:11px;color:var(--green);font-weight:700;">Pay ${fmtNGN(w.ngnAmount)}</div></div>
+            </div>
+            <div style="background:var(--surface);border-radius:10px;padding:10px 14px;margin-bottom:8px;">
+                <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Send to Bank</div>
+                <div style="font-size:13px;font-weight:700;">${w.bank||'—'}</div>
+                <div style="font-family:'Space Mono',monospace;font-size:13px;margin-top:2px;letter-spacing:0.05em;">${w.account||'—'}</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px;">${w.accountName||'—'}</div>
+            </div>
+            <div style="font-size:10px;color:var(--muted);margin-bottom:12px;">${fmtDate(w.date)}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button onclick="adminWithdraw('${w.id}','approved')" style="padding:10px;border-radius:10px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:var(--green);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✓ Paid</button>
+                <button onclick="adminWithdraw('${w.id}','rejected')" style="padding:10px;border-radius:10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--red);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">✕ Reject</button>
+            </div>
+        </div>`}).join('')}
+    </div>`:`<div class="info-box" style="margin-bottom:20px;"><p>✅ No pending withdrawals.</p></div>`}
+
+    <div class="admin-section">
+        <div class="admin-section-title">👥 All Users (${db.users.length})</div>
+        ${db.users.map(u=>`
+        <div class="admin-user-row">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0;">${u.name.charAt(0)}</div>
+                <div><div style="font-size:13px;font-weight:700;">${u.name}</div><div style="font-size:10px;color:var(--muted);">${u.email}</div></div>
+            </div>
+            <div style="text-align:right;"><div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--green);">${fmtUSD(u.balance)}</div><span class="badge ${u.role==='admin'?'badge-blue':'badge-green'}" style="margin-top:4px;">${u.role}</span></div>
+        </div>`).join('')}
+    </div>
+
+    <div class="admin-section">
+        <div class="admin-section-title">⚙️ Manual Balance Adjustment (USD)</div>
+        <div class="form-group"><label class="form-label">User UID</label><input id="adj-uid" type="text" placeholder="e.g. DXN48DJG" class="form-input"></div>
+        <div class="form-group"><label class="form-label">USD Amount (+ credit / − debit)</label><input id="adj-amt" type="number" placeholder="e.g. 10.00 or -5.00" class="form-input"></div>
+        <button onclick="adminAdjustBalance()" class="btn-primary btn-full" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);">Apply Adjustment</button>
+    </div>
+</div>`}
+
+}; // end views
+
+// ─── HANDLERS ─────────────────────────────────────────────────────────────
+async function handleLogin() {
+    const email = document.getElementById('l-email').value.trim();
+    const pass  = document.getElementById('l-pass').value;
+    if (!email||!pass) return toast("Fill in all fields");
+    const u = db.users.find(x => x.email===email && x.password===pass);
+    if (u) { user=u; localStorage.setItem('dxt_uid',u.uid); router('dashboard'); setInterval(processROI,30000); }
+    else toast("❌ Wrong email or password");
+}
+
+async function handleSignup() {
+    const name  = document.getElementById('s-name').value.trim();
+    const email = document.getElementById('s-email').value.trim();
+    const pass  = document.getElementById('s-pass').value;
+    const ref   = document.getElementById('s-ref').value.trim().toUpperCase();
+    if (!name||!email||!pass) return toast("All fields are required");
+    if (db.users.find(x=>x.email===email)) return toast("Email already registered");
+    const newUid = genUID();
+    const bonus  = toUSD(600);
+    const nu = { uid:newUid, name, email, password:pass, balance:bonus, refCode:newUid, referredBy:ref, role:'user' };
+    if (ref) {
+        const referrer = db.users.find(u=>u.refCode===ref);
+        if (referrer) { referrer.balance+=bonus; db.history.push({userId:referrer.uid,type:'referral_bonus',label:`Referral bonus from ${name}`,amount:bonus,date:Date.now()}); }
+    }
+    db.users.push(nu);
+    await sync('POST');
+    toast("✅ Account created! Please login.");
+    router('login');
+}
+
+async function handleBuy(planId) {
+    const amt  = parseFloat(document.getElementById(`buy-${planId}`).value);
+    const plan = db.plans.find(p=>p.id===planId);
+    if (!amt||isNaN(amt)) return toast("Enter an amount in USD");
+    const minU = plan.minInvestment/DEP_RATE, maxU = plan.maxInvestment/DEP_RATE;
+    if (amt<minU) return toast(`Minimum is $${minU.toFixed(2)}`);
+    if (amt>maxU) return toast(`Maximum is $${maxU.toFixed(2)}`);
+    if (user.balance<amt) return toast("Insufficient balance. Deposit first.");
+    const tu = db.users.find(u=>u.uid===user.uid);
+    tu.balance -= amt;
+    db.investments.push({ id:genUID(), userId:user.uid, planId:plan.id, planName:plan.name, amount:amt, dailyROI:plan.dailyROI, durationDays:plan.durationDays, startDate:Date.now(), daysPassed:0, earnedTotal:0, status:'active' });
+    db.history.push({ userId:user.uid, type:'investment', label:`Invested in ${plan.name}`, amount:amt, date:Date.now() });
+    await sync('POST');
+    toast(`✅ ${plan.name} activated!`);
+    router('dashboard');
+}
+
+async function handleDeposit() {
+    const ngn = parseFloat(document.getElementById('dep-ngn').value);
+    const ref = document.getElementById('dep-ref').value.trim();
+    if (!ngn||ngn<=0) return toast("Enter the NGN amount you sent");
+    if (!ref) return toast("Enter your transaction reference");
+    const usdCredit = toUSD(ngn);
+    db.deposits.push({ id:genUID(), userId:user.uid, amount:usdCredit, ngnAmount:ngn, ref, method:'Bank Transfer (NGN)', status:'pending', date:Date.now() });
+    await sync('POST');
+    toast(`✅ Deposit submitted — ${fmtUSD(usdCredit)} pending approval`);
+    router('deposit');
+}
+
+async function handleWithdraw() {
+    const usd     = parseFloat(document.getElementById('wd-usd').value);
+    const bank    = document.getElementById('wd-bank').value.trim();
+    const account = document.getElementById('wd-account').value.trim();
+    const accName = document.getElementById('wd-accname').value.trim();
+    if (!usd||usd<1)      return toast("Minimum withdrawal is $1.00");
+    if (user.balance<usd) return toast("Insufficient balance");
+    if (!bank)    return toast("Enter your bank name");
+    if (!account) return toast("Enter your account number");
+    if (!accName) return toast("Enter your account name");
+    const ngnOut = toNGN(usd);
+    const tu = db.users.find(u=>u.uid===user.uid);
+    tu.balance -= usd;
+    db.withdrawals.push({ id:genUID(), userId:user.uid, amount:usd, ngnAmount:ngnOut, bank, account, accountName:accName, method:'Bank Transfer (NGN)', status:'pending', date:Date.now() });
+    await sync('POST');
+    toast(`✅ Withdrawal requested — ${fmtNGN(ngnOut)} coming to your bank`);
+    router('withdraw');
+}
+
+function copyText(text, msg) { navigator.clipboard.writeText(text).then(()=>toast(msg||'✅ Copied!')); }
+
+async function adminDeposit(id, action) {
+    const d = db.deposits.find(x=>x.id===id); if (!d) return;
+    d.status = action;
+    if (action==='approved') { const u=db.users.find(x=>x.uid===d.userId); if(u) u.balance+=d.amount; db.history.push({userId:d.userId,type:'deposit',label:'Deposit approved · Bank Transfer',amount:d.amount,date:Date.now()}); }
+    await sync('POST');
+    toast(action==='approved'?`✅ Approved — ${fmtUSD(d.amount)} credited`:`Deposit rejected`);
+    router('admin');
+}
+
+async function adminWithdraw(id, action) {
+    const w = db.withdrawals.find(x=>x.id===id); if (!w) return;
+    w.status = action;
+    if (action==='rejected') { const u=db.users.find(x=>x.uid===w.userId); if(u) u.balance+=w.amount; }
+    await sync('POST');
+    toast(action==='approved'?`✅ Marked paid — ${fmtNGN(w.ngnAmount)} sent`:`Rejected — ${fmtUSD(w.amount)} refunded`);
+    router('admin');
+}
+
+async function adminAdjustBalance() {
+    const id  = document.getElementById('adj-uid').value.trim().toUpperCase();
+    const amt = parseFloat(document.getElementById('adj-amt').value);
+    if (!id||isNaN(amt)) return toast("Enter UID and USD amount");
+    const u = db.users.find(x=>x.uid===id);
+    if (!u) return toast("User not found");
+    u.balance += amt;
+    db.history.push({userId:u.uid,type:'adjustment',label:'Admin balance adjustment',amount:Math.abs(amt),date:Date.now()});
+    await sync('POST');
+    toast(`✅ ${u.name} → new balance ${fmtUSD(u.balance)}`);
+    router('admin');
+}
+
+function handleLogout() {
+    if (!confirm('Sign out?')) return;
+    user = null; localStorage.removeItem('dxt_uid'); router('login');
+}
+
+// ─── ROUTER ───────────────────────────────────────────────────────────────
+function router(scr) {
+    currentScreen = scr;
+    const header  = document.getElementById('app-header');
+    const navbar  = document.getElementById('navbar');
+    const content = document.getElementById('screen-content');
+    if (['login','signup'].includes(scr)) { header.style.display='none'; navbar.style.display='none'; }
+    else { header.style.display='flex'; navbar.style.display='flex'; document.getElementById('display-name').textContent=user?user.name.split(' ')[0]:''; }
+    setActiveNav(scr);
+    content.innerHTML = (views[scr]?views[scr]():views.dashboard());
+    window.scrollTo(0,0);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+window.onload = async () => {
+    await sync('GET');
+    // First user in the JSON is always admin
+    if (db && db.users && db.users.length > 0) {
+        db.users[0].role = 'admin';
+    }
+    const saved = localStorage.getItem('dxt_uid');
+    if (saved && db) {
+        user = db.users.find(u => u.uid === saved);
+        if (user) { router('dashboard'); setInterval(processROI, 30000); return; }
+    }
+    router('login');
+};
+</script>
+</body>
+</html>

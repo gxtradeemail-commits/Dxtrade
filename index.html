@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ═══ SEO META ═══ -->
+    <title>DXTRADE — AI Bot Trading Platform | Earn Daily Returns</title>
+    <meta name="description" content="DXTRADE is an AI-powered bot trading platform. Earn daily ROI of up to 22% with automated trading bots. Deposit via Nigerian bank transfer. Withdraw in NGN. Start with as little as $2.">
+    <meta name="keywords" content="DXTRADE, bot trading, AI trading, daily ROI, automated trading Nigeria, passive income, investment bots, crypto trading Nigeria, earn daily">
+    <meta name="author" content="DXTRADE">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dxtrade.com/">
+
+    <!-- ═══ OPEN GRAPH ═══ -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://dxtrade.com/">
+    <meta property="og:title" content="DXTRADE — AI Bot Trading Platform | Earn Daily Returns">
+    <meta property="og:description" content="Automated AI trading bots earning up to 22% daily ROI. Deposit via Nigerian bank. Withdraw to your account. Join thousands of traders today.">
+    <meta property="og:image" content="https://dxtrade.com/og-image.jpg">
+    <meta property="og:site_name" content="DXTRADE">
+    <meta property="og:locale" content="en_NG">
+
+    <!-- ═══ TWITTER CARD ═══ -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@dxtrade">
+    <meta name="twitter:title" content="DXTRADE — AI Bot Trading Platform">
+    <meta name="twitter:description" content="Earn daily ROI with AI trading bots. Nigerian bank deposit & withdrawal supported.">
+    <meta name="twitter:image" content="https://dxtrade.com/og-image.jpg">
+
+    <!-- ═══ STRUCTURED DATA ═══ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FinancialService",
+      "name": "DXTRADE",
+      "description": "AI-powered bot trading platform with daily returns up to 22%. Supports Nigerian bank deposit and withdrawal.",
+      "url": "https://dxtrade.com",
+      "serviceType": "Automated Investment Trading",
+      "areaServed": "NG",
+      "currenciesAccepted": "NGN, USD",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Bot Alpha",
+          "description": "10% daily ROI for 10 days. Min $2 — Max $14.",
+          "price": "2.00",
+          "priceCurrency": "USD"
+        },
+        {
+          "@type": "Offer",
+          "name": "Bot Sigma",
+          "description": "15% daily ROI for 20 days. Min $17 — Max $68.",
+          "price": "17.00",
+          "priceCurrency": "USD"
+        },
+        {
+          "@type": "Offer",
+          "name": "Bot Omega",
+          "description": "22% daily ROI for 30 days. Min $102 — Max $680.",
+          "price": "102.00",
+          "priceCurrency": "USD"
+        }
+      ],
+      "sameAs": [
+        "https://twitter.com/dxtrade",
+        "https://t.me/dxtrade"
+      ]
+    }
+    </script>
+
+    <!-- ═══ FONTS ═══ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ─── RESET & ROOT ─────────────────────────────────────────────── */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        :root {
+            --bg:      #040810;
+            --bg2:     #080f1e;
+            --surface: #0c1628;
+            --border:  rgba(56,139,253,0.14);
+            --blue:    #388bfd;
+            --cyan:    #39d0d8;
+            --green:   #3dffa0;
+            --gold:    #f5c542;
+            --red:     #ff5f5f;
+            --text:    #e8f2ff;
+            --muted:   #4d6080;
+            --display: 'Bebas Neue', sans-serif;
+            --body:    'DM Sans', sans-serif;
+            --mono:    'Space Mono', monospace;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--body);
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ─── NOISE OVERLAY ────────────────────────────────────────────── */
+        body::before {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            background-size: 256px 256px;
+            pointer-events: none;
+        }
+
+        /* ─── GRID LINES ───────────────────────────────────────────────── */
+        body::after {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
+            background-image:
+                linear-gradient(rgba(56,139,253,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56,139,253,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+
+        /* ─── UTILS ─────────────────────────────────────────────────────── */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+        .tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--mono); font-size: 10px; font-weight: 700;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--cyan);
+            border: 1px solid rgba(57,208,216,0.25);
+            background: rgba(57,208,216,0.06);
+            padding: 6px 14px; border-radius: 100px;
+        }
+        .tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: tagblink 2s infinite; }
+        @keyframes tagblink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+        .btn-cta {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--blue);
+            color: #fff;
+            font-family: var(--body); font-size: 15px; font-weight: 600;
+            padding: 16px 32px; border-radius: 12px;
+            text-decoration: none;
+            border: none; cursor: pointer;
+            transition: all 0.25s;
+            position: relative; overflow: hidden;
+        }
+        .btn-cta::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+            opacity: 0; transition: opacity 0.25s;
+        }
+        .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(56,139,253,0.35); }
+        .btn-cta:hover::after { opacity: 1; }
+        .btn-cta svg { flex-shrink: 0; }
+
+        .btn-ghost {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: transparent;
+            color: var(--text);
+            font-family: var(--body); font-size: 15px; font-weight: 500;
+            padding: 15px 28px; border-radius: 12px;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .btn-ghost:hover { border-color: rgba(56,139,253,0.4); color: var(--blue); background: rgba(56,139,253,0.05); }
+
+        /* ─── NAV ────────────────────────────────────────────────────────── */
+        #nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 0 24px;
+            transition: all 0.3s;
+        }
+        #nav.scrolled {
+            background: rgba(4,8,16,0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center;
+            height: 72px;
+        }
+        .nav-logo {
+            font-family: var(--mono); font-size: 22px; font-weight: 700;
+            letter-spacing: 0.06em;
+            background: linear-gradient(135deg, var(--blue), var(--cyan));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex; align-items: center; gap: 32px;
+            list-style: none;
+        }
+        .nav-links a {
+            font-size: 14px; font-weight: 500;
+            color: var(--muted); text-decoration: none;
+            transition: color 0.2s;
+            letter-spacing: 0.02em;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-cta {
+            background: var(--blue); color: #fff;
+            font-family: var(--body); font-size: 13px; font-weight: 600;
+            padding: 10px 22px; border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+        .hamburger { display: none; background: none; border: none; cursor: pointer; color: var(--text); }
+
+        /* ─── HERO ───────────────────────────────────────────────────────── */
+        #hero {
+            min-height: 100vh;
+            display: flex; align-items: center;
+            padding: 120px 0 80px;
+            position: relative; overflow: hidden;
+        }
+        .hero-glow {
+            position: absolute;
+            top: -200px; left: 50%; transform: translateX(-50%);
+            width: 900px; height: 600px;
+            background: radial-gradient(ellipse, rgba(56,139,253,0.12) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .hero-glow-2 {
+            position: absolute;
+            bottom: -100px; right: -200px;
+            width: 600px; height: 500px;
+            background: radial-gradient(ellipse, rgba(57,208,216,0.07) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .hero-content {
+            display: grid; grid-template-columns: 1fr 1fr;
+            align-items: center; gap: 64px;
+        }
+        .hero-tag { margin-bottom: 24px; }
+        .hero-headline {
+            font-family: var(--display);
+            font-size: clamp(52px, 7vw, 88px);
+            line-height: 0.95;
+            letter-spacing: 0.02em;
+            margin-bottom: 24px;
+        }
+        .hero-headline .line-accent {
+            background: linear-gradient(90deg, var(--blue), var(--cyan));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-desc {
+            font-size: 17px; font-weight: 300;
+            color: rgba(232,242,255,0.65);
+            margin-bottom: 36px;
+            line-height: 1.7;
+            max-width: 440px;
+        }
+        .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .hero-stats {
+            display: flex; gap: 32px;
+            margin-top: 48px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+        .hero-stat-val {
+            font-family: var(--mono);
+            font-size: 28px; font-weight: 700;
+            color: var(--text);
+        }
+        .hero-stat-label {
+            font-size: 11px; font-weight: 500;
+            color: var(--muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        /* Hero visual */
+        .hero-visual {
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .hero-card {
+            background: linear-gradient(135deg, rgba(12,22,40,0.95), rgba(8,15,30,0.98));
+            border: 1px solid rgba(56,139,253,0.2);
+            border-radius: 24px;
+            padding: 32px;
+            width: 100%; max-width: 380px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        .hc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+        .hc-bot-name { font-family: var(--mono); font-size: 13px; color: var(--cyan); font-weight: 700; letter-spacing: 0.08em; }
+        .hc-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--green); font-weight: 600; }
+        .hc-status::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); animation:tagblink 1.5s infinite; }
+        .hc-amount {
+            font-family: var(--mono); font-size: 40px; font-weight: 700;
+            color: var(--text); margin-bottom: 6px;
+        }
+        .hc-sub { font-size: 12px; color: var(--muted); margin-bottom: 28px; font-family: var(--mono); }
+        .hc-bar-bg { background: rgba(255,255,255,0.06); border-radius: 100px; height: 6px; overflow: hidden; margin-bottom: 8px; }
+        .hc-bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--blue), var(--cyan)); animation: barfill 3s ease-in-out infinite alternate; }
+        @keyframes barfill { from{width:42%} to{width:78%} }
+        .hc-bar-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); font-family: var(--mono); }
+        .hc-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+        .hc-rows { display: flex; flex-direction: column; gap: 12px; }
+        .hc-row { display: flex; justify-content: space-between; align-items: center; }
+        .hc-row-key { font-size: 12px; color: var(--muted); }
+        .hc-row-val { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--text); }
+        .hc-row-val.green { color: var(--green); }
+        .hc-row-val.blue  { color: var(--blue); }
+        /* Orbiting dots */
+        .hero-orb {
+            position: absolute; border-radius: 50%;
+            border: 1px dashed rgba(56,139,253,0.2);
+            animation: orbit 12s linear infinite;
+        }
+        .hero-orb:nth-child(1) { width: 420px; height: 420px; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+        .hero-orb:nth-child(2) { width: 500px; height: 500px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 20s; animation-direction: reverse; }
+        .hero-orb::after {
+            content: ''; position: absolute; width: 8px; height: 8px;
+            background: var(--blue); border-radius: 50%;
+            top: -4px; left: 50%;
+            box-shadow: 0 0 12px var(--blue);
+        }
+        @keyframes orbit { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+        /* ─── TICKER ─────────────────────────────────────────────────────── */
+        #ticker {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: rgba(8,15,30,0.8);
+            padding: 14px 0;
+            overflow: hidden;
+            position: relative; z-index: 1;
+        }
+        .ticker-track {
+            display: flex; gap: 0;
+            animation: ticker 30s linear infinite;
+            white-space: nowrap;
+        }
+        .ticker-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 0 40px;
+            font-family: var(--mono); font-size: 12px;
+            color: var(--muted);
+            border-right: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .ticker-item .name { color: var(--text); font-weight: 700; letter-spacing: 0.06em; }
+        .ticker-item .up   { color: var(--green); }
+        .ticker-item .down { color: var(--red); }
+        @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+        /* ─── SECTION BASE ───────────────────────────────────────────────── */
+        section { padding: 100px 0; position: relative; z-index: 1; }
+        .section-header { text-align: center; margin-bottom: 64px; }
+        .section-title {
+            font-family: var(--display);
+            font-size: clamp(36px, 5vw, 62px);
+            letter-spacing: 0.03em;
+            line-height: 1;
+            margin: 14px 0 18px;
+        }
+        .section-desc {
+            font-size: 16px; font-weight: 300;
+            color: rgba(232,242,255,0.55);
+            max-width: 520px; margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* ─── FEATURES ───────────────────────────────────────────────────── */
+        #features { background: var(--bg2); }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .feat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .feat-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--blue), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .feat-card:hover { border-color: rgba(56,139,253,0.3); transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .feat-card:hover::before { opacity: 1; }
+        .feat-icon {
+            width: 52px; height: 52px;
+            background: rgba(56,139,253,0.1);
+            border: 1px solid rgba(56,139,253,0.2);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+        .feat-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+        .feat-desc { font-size: 14px; font-weight: 300; color: rgba(232,242,255,0.55); line-height: 1.7; }
+
+        /* ─── HOW IT WORKS ────────────────────────────────────────────────── */
+        #how {
+            background: var(--bg);
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            position: relative;
+        }
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 32px; left: 10%; right: 10%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), var(--border), transparent);
+        }
+        .step {
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+        }
+        .step-num {
+            width: 64px; height: 64px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--mono); font-size: 20px; font-weight: 700;
+            color: var(--blue);
+            margin: 0 auto 24px;
+            position: relative; z-index: 1;
+        }
+        .step-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+        .step-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+        /* ─── PLANS ──────────────────────────────────────────────────────── */
+        #plans { background: var(--bg2); }
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            align-items: start;
+        }
+        .plan-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 36px 30px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .plan-card.featured {
+            border-color: rgba(56,139,253,0.45);
+            background: linear-gradient(160deg, rgba(12,22,40,1) 0%, rgba(16,30,60,0.9) 100%);
+            box-shadow: 0 0 60px rgba(56,139,253,0.12), inset 0 1px 0 rgba(56,139,253,0.15);
+        }
+        .plan-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            background: var(--blue);
+            font-family: var(--mono); font-size: 9px; font-weight: 700;
+            letter-spacing: 0.2em;
+            color: #fff;
+            padding: 5px 20px;
+            border-radius: 0 0 12px 12px;
+        }
+        .plan-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+        .plan-icon { font-size: 40px; margin-bottom: 16px; }
+        .plan-name { font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: 0.12em; color: var(--blue); text-transform: uppercase; margin-bottom: 8px; }
+        .plan-roi {
+            font-family: var(--display);
+            font-size: 64px;
+            line-height: 1;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .plan-roi-label { font-size: 12px; color: var(--muted); margin-bottom: 24px; font-family: var(--mono); }
+        .plan-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+        .plan-features { list-style: none; text-align: left; margin-bottom: 28px; display: flex; flex-direction: column; gap: 12px; }
+        .plan-features li {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 14px; color: rgba(232,242,255,0.75);
+        }
+        .plan-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+        .plan-btn {
+            display: block; width: 100%;
+            background: rgba(56,139,253,0.12);
+            border: 1px solid rgba(56,139,253,0.3);
+            color: var(--blue);
+            font-family: var(--body); font-size: 14px; font-weight: 600;
+            padding: 14px 20px; border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+        .plan-btn:hover, .plan-card.featured .plan-btn {
+            background: var(--blue); color: #fff; border-color: var(--blue);
+        }
+        .plan-card.featured .plan-btn:hover { opacity: 0.85; }
+
+        /* ─── STATS BAND ─────────────────────────────────────────────────── */
+        #stats-band {
+            padding: 64px 0;
+            background: linear-gradient(135deg, rgba(8,15,30,1) 0%, rgba(12,22,40,1) 100%);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            position: relative; z-index: 1;
+        }
+        .stats-band-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+        .stat-band-item {
+            text-align: center;
+            padding: 0 32px;
+            border-right: 1px solid var(--border);
+        }
+        .stat-band-item:last-child { border-right: none; }
+        .stat-band-val {
+            font-family: var(--display);
+            font-size: 52px; line-height: 1;
+            background: linear-gradient(135deg, var(--text), rgba(232,242,255,0.6));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        .stat-band-label { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+
+        /* ─── FAQ ────────────────────────────────────────────────────────── */
+        #faq { background: var(--bg); }
+        .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+        .faq-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        .faq-item.open { border-color: rgba(56,139,253,0.3); }
+        .faq-q {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 24px;
+            cursor: pointer;
+            font-size: 15px; font-weight: 600;
+            user-select: none;
+        }
+        .faq-q .icon {
+            width: 28px; height: 28px; flex-shrink: 0;
+            background: rgba(56,139,253,0.1); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; color: var(--blue);
+            transition: transform 0.3s;
+        }
+        .faq-item.open .faq-q .icon { transform: rotate(45deg); }
+        .faq-a {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            font-size: 14px; font-weight: 300;
+            color: rgba(232,242,255,0.65);
+            line-height: 1.75;
+        }
+        .faq-item.open .faq-a { max-height: 300px; padding: 0 24px 20px; }
+
+        /* ─── TESTIMONIALS ────────────────────────────────────────────────── */
+        #testimonials { background: var(--bg2); }
+        .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+        .testi-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            position: relative;
+        }
+        .testi-quote {
+            font-size: 40px; line-height: 1;
+            color: var(--blue); opacity: 0.3;
+            font-family: Georgia, serif;
+            margin-bottom: 12px;
+        }
+        .testi-text { font-size: 14px; font-weight: 300; color: rgba(232,242,255,0.7); line-height: 1.7; margin-bottom: 20px; }
+        .testi-author { display: flex; align-items: center; gap: 12px; }
+        .testi-avatar {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--blue), var(--cyan));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 16px; flex-shrink: 0;
+        }
+        .testi-name { font-size: 14px; font-weight: 600; }
+        .testi-role { font-size: 11px; color: var(--muted); margin-top: 1px; }
+        .testi-stars { color: var(--gold); font-size: 12px; margin-bottom: 12px; letter-spacing: 2px; }
+
+        /* ─── CTA SECTION ─────────────────────────────────────────────────── */
+        #cta {
+            padding: 120px 0;
+            text-align: center;
+            position: relative; z-index: 1;
+            overflow: hidden;
+        }
+        .cta-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            width: 800px; height: 400px;
+            background: radial-gradient(ellipse, rgba(56,139,253,0.1) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .cta-title {
+            font-family: var(--display);
+            font-size: clamp(42px, 6vw, 78px);
+            letter-spacing: 0.03em;
+            line-height: 1;
+            margin: 16px 0 20px;
+            position: relative; z-index: 1;
+        }
+        .cta-desc {
+            font-size: 16px; font-weight: 300;
+            color: rgba(232,242,255,0.55);
+            max-width: 480px; margin: 0 auto 40px;
+            line-height: 1.7;
+            position: relative; z-index: 1;
+        }
+        .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; position: relative; z-index: 1; }
+
+        /* ─── FOOTER ──────────────────────────────────────────────────────── */
+        footer {
+            background: var(--bg2);
+            border-top: 1px solid var(--border);
+            padding: 64px 0 32px;
+            position: relative; z-index: 1;
+        }
+        .footer-top {
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px; margin-bottom: 48px;
+        }
+        .footer-brand-desc { font-size: 13px; color: var(--muted); line-height: 1.75; margin-top: 14px; max-width: 280px; }
+        .footer-col-title { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text); margin-bottom: 16px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--text); }
+        .footer-bottom {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-top: 32px; border-top: 1px solid var(--border);
+            font-size: 12px; color: var(--muted);
+        }
+        .footer-legal { display: flex; gap: 24px; }
+        .footer-legal a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+        .footer-legal a:hover { color: var(--text); }
+        .footer-disclaimer {
+            background: rgba(245,197,66,0.06);
+            border: 1px solid rgba(245,197,66,0.15);
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 12px;
+            color: rgba(232,242,255,0.45);
+            line-height: 1.65;
+            margin-bottom: 32px;
+        }
+
+        /* ─── MOBILE ──────────────────────────────────────────────────────── */
+        @media (max-width: 900px) {
+            .hero-content { grid-template-columns: 1fr; gap: 48px; }
+            .hero-visual { display: none; }
+            .features-grid { grid-template-columns: 1fr; }
+            .plans-grid { grid-template-columns: 1fr; }
+            .stats-band-grid { grid-template-columns: repeat(2,1fr); }
+            .stat-band-item:nth-child(2) { border-right: none; }
+            .stat-band-item:nth-child(3) { border-right: 1px solid var(--border); border-top: 1px solid var(--border); padding-top: 24px; margin-top: 24px; }
+            .stat-band-item:nth-child(4) { border-top: 1px solid var(--border); padding-top: 24px; margin-top: 24px; }
+            .steps-grid { grid-template-columns: repeat(2,1fr); gap: 32px; }
+            .steps-grid::before { display: none; }
+            .testi-grid { grid-template-columns: 1fr; }
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+        }
+        @media (max-width: 600px) {
+            .steps-grid { grid-template-columns: 1fr; }
+            .footer-top { grid-template-columns: 1fr; }
+            .stats-band-grid { grid-template-columns: 1fr 1fr; }
+            .hero-stats { gap: 20px; }
+            .hero-actions { flex-direction: column; }
+            .btn-cta, .btn-ghost { width: 100%; justify-content: center; }
+        }
+
+        /* ─── SCROLL ANIMATIONS ───────────────────────────────────────────── */
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+    </style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ══════════════════════════════════════════════════════════ -->
+<nav id="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+        <a href="/" class="nav-logo" aria-label="DXTRADE Home">DXTRADE</a>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how">How It Works</a></li>
+            <li><a href="#plans">Plans</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </ul>
+        <a href="dxtrade.html" class="nav-cta" aria-label="Launch App">Launch App →</a>
+        <button class="hamburger" aria-label="Open menu" onclick="toggleMenu()">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+    </div>
+</nav>
+
+<!-- Mobile menu (hidden by default) -->
+<div id="mobile-menu" style="display:none;position:fixed;inset:0;background:rgba(4,8,16,0.97);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:32px;">
+    <a href="/" style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--blue);text-decoration:none;" onclick="toggleMenu()">DXTRADE</a>
+    <a href="#features" style="font-size:20px;color:var(--text);text-decoration:none;" onclick="toggleMenu()">Features</a>
+    <a href="#how" style="font-size:20px;color:var(--text);text-decoration:none;" onclick="toggleMenu()">How It Works</a>
+    <a href="#plans" style="font-size:20px;color:var(--text);text-decoration:none;" onclick="toggleMenu()">Plans</a>
+    <a href="#faq" style="font-size:20px;color:var(--text);text-decoration:none;" onclick="toggleMenu()">FAQ</a>
+    <a href="dxtrade.html" class="btn-cta" onclick="toggleMenu()">Launch App →</a>
+</div>
+
+
+<!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
+<section id="hero" aria-label="Hero section">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-glow-2" aria-hidden="true"></div>
+    <div class="container">
+        <div class="hero-content">
+            <div>
+                <div class="hero-tag">
+                    <span class="tag">AI Trading · Live Now</span>
+                </div>
+                <h1 class="hero-headline">
+                    TRADE<br>
+                    <span class="line-accent">SMARTER</span><br>
+                    DAILY
+                </h1>
+                <p class="hero-desc">
+                    DXTRADE deploys intelligent trading bots 24/7 on your behalf.
+                    Earn up to <strong>22% daily ROI</strong> with automated strategies —
+                    deposit and withdraw in Nigerian Naira.
+                </p>
+                <div class="hero-actions">
+                    <a href="dxtrade.html" class="btn-cta" aria-label="Start trading now">
+                        Start Trading
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                    <a href="#plans" class="btn-ghost">View Plans</a>
+                </div>
+                <div class="hero-stats">
+                    <div>
+                        <div class="hero-stat-val">22%</div>
+                        <div class="hero-stat-label">Max Daily ROI</div>
+                    </div>
+                    <div>
+                        <div class="hero-stat-val">3</div>
+                        <div class="hero-stat-label">Bot Tiers</div>
+                    </div>
+                    <div>
+                        <div class="hero-stat-val">24/7</div>
+                        <div class="hero-stat-label">Always Running</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+                <div class="hero-orb"></div>
+                <div class="hero-orb"></div>
+                <div class="hero-card">
+                    <div class="hc-header">
+                        <div class="hc-bot-name">BOT OMEGA</div>
+                        <div class="hc-status">RUNNING</div>
+                    </div>
+                    <div class="hc-amount">$1,320.00</div>
+                    <div class="hc-sub">≈ ₦1,795,200 · Balance</div>
+                    <div class="hc-bar-bg"><div class="hc-bar-fill"></div></div>
+                    <div class="hc-bar-labels"><span>Day 12 / 30</span><span>Progress</span></div>
+                    <hr class="hc-divider">
+                    <div class="hc-rows">
+                        <div class="hc-row"><span class="hc-row-key">Daily ROI</span><span class="hc-row-val blue">22.0%</span></div>
+                        <div class="hc-row"><span class="hc-row-key">Earned Today</span><span class="hc-row-val green">+$290.40</span></div>
+                        <div class="hc-row"><span class="hc-row-key">Total Earned</span><span class="hc-row-val green">+$3,484.80</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ TICKER ═══════════════════════════════════════════════════════════════ -->
+<div id="ticker" aria-hidden="true">
+    <div class="ticker-track">
+        <!-- Duplicated for seamless loop -->
+        <div class="ticker-item"><span class="name">BOT ALPHA</span><span>10% daily</span><span class="up">▲ ACTIVE</span></div>
+        <div class="ticker-item"><span class="name">BOT SIGMA</span><span>15% daily</span><span class="up">▲ ACTIVE</span></div>
+        <div class="ticker-item"><span class="name">BOT OMEGA</span><span>22% daily</span><span class="up">▲ ACTIVE</span></div>
+        <div class="ticker-item"><span class="name">NGN/USD</span><span>Deposit rate</span><span>₦1,470</span></div>
+        <div class="ticker-item"><span class="name">NGN/USD</span><span>Withdrawal rate</span><span>₦1,360</span></div>
+        <div class="ticker-item"><span class="name">DAILY PAYOUTS</span><span>Processed</span><span class="up">▲ ON SCHEDULE</span></div>
+        <div class="ticker-item"><span class="name">REFERRAL BONUS</span><span>Per invite</span><span class="up">$0.41 credited</span></div>
+        <div class="ticker-item"><span class="name">BOT ALPHA</span><span>10% daily</span><span class="up">▲ ACTIVE</span></div>
+        <div class="ticker-item"><span class="name">BOT SIGMA</span><span>15% daily</span><span class="up">▲ ACTIVE</span></div>
+        <div class="ticker-item"><span class="name">BOT OMEGA</span><span>22% daily</span><span class="up">▲ ACTIVE</span></div>
+        <div class="ticker-item"><span class="name">NGN/USD</span><span>Deposit rate</span><span>₦1,470</span></div>
+        <div class="ticker-item"><span class="name">NGN/USD</span><span>Withdrawal rate</span><span>₦1,360</span></div>
+        <div class="ticker-item"><span class="name">DAILY PAYOUTS</span><span>Processed</span><span class="up">▲ ON SCHEDULE</span></div>
+        <div class="ticker-item"><span class="name">REFERRAL BONUS</span><span>Per invite</span><span class="up">$0.41 credited</span></div>
+    </div>
+</div>
+
+
+<!-- ═══ FEATURES ═════════════════════════════════════════════════════════════ -->
+<section id="features" aria-labelledby="features-title">
+    <div class="container">
+        <div class="section-header">
+            <span class="tag">Why DXTRADE</span>
+            <h2 id="features-title" class="section-title">Built for <br>serious traders</h2>
+            <p class="section-desc">Everything you need to grow your capital with intelligent automation and full transparency.</p>
+        </div>
+        <div class="features-grid">
+            <article class="feat-card reveal">
+                <div class="feat-icon">🤖</div>
+                <h3 class="feat-title">AI-Powered Bots</h3>
+                <p class="feat-desc">Our trading bots analyze market patterns 24/7 and execute trades automatically — no manual effort required from you.</p>
+            </article>
+            <article class="feat-card reveal reveal-delay-1">
+                <div class="feat-icon">🇳🇬</div>
+                <h3 class="feat-title">Naira In & Out</h3>
+                <p class="feat-desc">Deposit and withdraw in Nigerian Naira via local bank transfer. No crypto wallet needed. Simple and familiar.</p>
+            </article>
+            <article class="feat-card reveal reveal-delay-2">
+                <div class="feat-icon">📈</div>
+                <h3 class="feat-title">Daily ROI Up to 22%</h3>
+                <p class="feat-desc">Choose from three bot tiers with daily returns ranging from 10% to 22%. Capital returned at plan completion.</p>
+            </article>
+            <article class="feat-card reveal">
+                <div class="feat-icon">🔒</div>
+                <h3 class="feat-title">Secure Platform</h3>
+                <p class="feat-desc">All funds tracked with a live JSON ledger. Every transaction logged, verified and approved by admin before crediting.</p>
+            </article>
+            <article class="feat-card reveal reveal-delay-1">
+                <div class="feat-icon">🎁</div>
+                <h3 class="feat-title">Referral Rewards</h3>
+                <p class="feat-desc">Invite friends and earn a $0.41 bonus for every signup. Both you and your friend receive the bonus instantly.</p>
+            </article>
+            <article class="feat-card reveal reveal-delay-2">
+                <div class="feat-icon">⚡</div>
+                <h3 class="feat-title">Instant Dashboard</h3>
+                <p class="feat-desc">Track your bots in real time. See progress bars, earned totals, and payout history — all in one clean mobile-first app.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══ HOW IT WORKS ══════════════════════════════════════════════════════════ -->
+<section id="how" aria-labelledby="how-title">
+    <div class="container">
+        <div class="section-header">
+            <span class="tag">Simple Process</span>
+            <h2 id="how-title" class="section-title">Up & earning<br>in 4 steps</h2>
+            <p class="section-desc">Getting started takes less than 5 minutes. No technical knowledge required.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step reveal">
+                <div class="step-num">01</div>
+                <h3 class="step-title">Create Account</h3>
+                <p class="step-desc">Sign up with your name, email and password. Get a $0.41 welcome bonus instantly credited.</p>
+            </div>
+            <div class="step reveal reveal-delay-1">
+                <div class="step-num">02</div>
+                <h3 class="step-title">Deposit Funds</h3>
+                <p class="step-desc">Send NGN via bank transfer to our Opay account. Submit your reference. Admin approves in 15–30 mins.</p>
+            </div>
+            <div class="step reveal reveal-delay-2">
+                <div class="step-num">03</div>
+                <h3 class="step-title">Activate a Bot</h3>
+                <p class="step-desc">Choose a trading plan — Alpha, Sigma, or Omega. Enter your USD amount and your bot starts immediately.</p>
+            </div>
+            <div class="step reveal reveal-delay-3">
+                <div class="step-num">04</div>
+                <h3 class="step-title">Withdraw Profits</h3>
+                <p class="step-desc">Request a withdrawal anytime. Enter your Nigerian bank account details and receive NGN within 24 hours.</p>
+            </div>
+        </div>
+        <div style="text-align:center;margin-top:56px;">
+            <a href="dxtrade.html" class="btn-cta" aria-label="Create your account now">
+                Create Free Account
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══ PLANS ═════════════════════════════════════════════════════════════════ -->
+<section id="plans" aria-labelledby="plans-title">
+    <div class="container">
+        <div class="section-header">
+            <span class="tag">Trading Plans</span>
+            <h2 id="plans-title" class="section-title">Choose your<br>bot tier</h2>
+            <p class="section-desc">Three levels of AI bots. Each returns your capital in full at the end of the plan period.</p>
+        </div>
+
+        <!-- Exchange rate note -->
+        <div style="display:flex;justify-content:center;gap:24px;margin-bottom:40px;flex-wrap:wrap;">
+            <div style="background:rgba(56,139,253,0.07);border:1px solid rgba(56,139,253,0.18);border-radius:12px;padding:10px 20px;font-family:var(--mono);font-size:12px;color:var(--text);">
+                💳 Deposit: <strong style="color:var(--cyan);">₦1,470 = $1.00</strong>
+            </div>
+            <div style="background:rgba(61,255,160,0.05);border:1px solid rgba(61,255,160,0.18);border-radius:12px;padding:10px 20px;font-family:var(--mono);font-size:12px;color:var(--text);">
+                💸 Withdrawal: <strong style="color:var(--green);">$1.00 = ₦1,360</strong>
+            </div>
+        </div>
+
+        <div class="plans-grid">
+            <!-- Alpha -->
+            <article class="plan-card reveal">
+                <div class="plan-icon">🚀</div>
+                <div class="plan-name">Bot Alpha</div>
+                <div class="plan-roi">10%</div>
+                <div class="plan-roi-label">daily ROI · 10 days</div>
+                <hr class="plan-divider">
+                <ul class="plan-features" aria-label="Bot Alpha features">
+                    <li>Min $2.04 — Max $13.61</li>
+                    <li>Total return: up to 100%</li>
+                    <li>Capital returned at end</li>
+                    <li>24/7 automated trading</li>
+                    <li>Live progress tracking</li>
+                </ul>
+                <a href="dxtrade.html" class="plan-btn" aria-label="Start with Bot Alpha">Get Started →</a>
+            </article>
+
+            <!-- Sigma (Featured) -->
+            <article class="plan-card featured reveal reveal-delay-1" aria-label="Most popular plan">
+                <div class="plan-icon">⚡</div>
+                <div class="plan-name">Bot Sigma</div>
+                <div class="plan-roi">15%</div>
+                <div class="plan-roi-label">daily ROI · 20 days</div>
+                <hr class="plan-divider">
+                <ul class="plan-features" aria-label="Bot Sigma features">
+                    <li>Min $17.01 — Max $68.03</li>
+                    <li>Total return: up to 300%</li>
+                    <li>Capital returned at end</li>
+                    <li>Priority bot processing</li>
+                    <li>Live progress tracking</li>
+                </ul>
+                <a href="dxtrade.html" class="plan-btn" aria-label="Start with Bot Sigma">Get Started →</a>
+            </article>
+
+            <!-- Omega -->
+            <article class="plan-card reveal reveal-delay-2">
+                <div class="plan-icon">💎</div>
+                <div class="plan-name">Bot Omega</div>
+                <div class="plan-roi">22%</div>
+                <div class="plan-roi-label">daily ROI · 30 days</div>
+                <hr class="plan-divider">
+                <ul class="plan-features" aria-label="Bot Omega features">
+                    <li>Min $102.04 — Max $680.27</li>
+                    <li>Total return: up to 660%</li>
+                    <li>Capital returned at end</li>
+                    <li>Highest tier AI strategy</li>
+                    <li>Live progress tracking</li>
+                </ul>
+                <a href="dxtrade.html" class="plan-btn" aria-label="Start with Bot Omega">Get Started →</a>
+            </article>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══ STATS BAND ════════════════════════════════════════════════════════════ -->
+<div id="stats-band" role="region" aria-label="Platform statistics">
+    <div class="container">
+        <div class="stats-band-grid">
+            <div class="stat-band-item">
+                <div class="stat-band-val">₦1,470</div>
+                <div class="stat-band-label">Deposit Rate / $1</div>
+            </div>
+            <div class="stat-band-item">
+                <div class="stat-band-val">22%</div>
+                <div class="stat-band-label">Max Daily Return</div>
+            </div>
+            <div class="stat-band-item">
+                <div class="stat-band-val">24H</div>
+                <div class="stat-band-label">Withdrawal Speed</div>
+            </div>
+            <div class="stat-band-item">
+                <div class="stat-band-val">$0</div>
+                <div class="stat-band-label">Hidden Fees</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ═══ TESTIMONIALS ══════════════════════════════════════════════════════════ -->
+<section id="testimonials" aria-labelledby="testimonials-title">
+    <div class="container">
+        <div class="section-header">
+            <span class="tag">Community</span>
+            <h2 id="testimonials-title" class="section-title">Traders are<br>earning daily</h2>
+        </div>
+        <div class="testi-grid">
+            <article class="testi-card reveal">
+                <div class="testi-stars">★★★★★</div>
+                <div class="testi-quote">"</div>
+                <p class="testi-text">I deposited ₦50,000 and activated Bot Sigma. In 20 days I withdrew over ₦200,000 to my Access Bank account. The process was seamless.</p>
+                <div class="testi-author">
+                    <div class="testi-avatar">C</div>
+                    <div><div class="testi-name">Chukwuemeka O.</div><div class="testi-role">Lagos, Nigeria · Bot Sigma User</div></div>
+                </div>
+            </article>
+            <article class="testi-card reveal reveal-delay-1">
+                <div class="testi-stars">★★★★★</div>
+                <div class="testi-quote">"</div>
+                <p class="testi-text">The referral system is incredible. I've referred 12 friends and earn bonuses every time. The admin approves deposits really fast.</p>
+                <div class="testi-author">
+                    <div class="testi-avatar">F</div>
+                    <div><div class="testi-name">Fatima A.</div><div class="testi-role">Abuja, Nigeria · Bot Alpha User</div></div>
+                </div>
+            </article>
+            <article class="testi-card reveal reveal-delay-2">
+                <div class="testi-stars">★★★★★</div>
+                <div class="testi-quote">"</div>
+                <p class="testi-text">Bot Omega gave me 22% daily for 30 days. I withdrew everything directly to my GTBank. DXTRADE is now my primary passive income source.</p>
+                <div class="testi-author">
+                    <div class="testi-avatar">T</div>
+                    <div><div class="testi-name">Taiwo B.</div><div class="testi-role">Port Harcourt · Bot Omega User</div></div>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══ FAQ ═══════════════════════════════════════════════════════════════════ -->
+<section id="faq" aria-labelledby="faq-title">
+    <div class="container">
+        <div class="section-header">
+            <span class="tag">FAQ</span>
+            <h2 id="faq-title" class="section-title">Common<br>questions</h2>
+            <p class="section-desc">Everything you need to know before getting started.</p>
+        </div>
+        <div class="faq-list" itemscope itemtype="https://schema.org/FAQPage">
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <div class="faq-q" onclick="toggleFaq(this)" aria-expanded="false" role="button" tabindex="0">
+                    <span itemprop="name">How do I deposit funds into DXTRADE?</span>
+                    <span class="icon" aria-hidden="true">+</span>
+                </div>
+                <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">Send Nigerian Naira (NGN) via bank transfer to our Opay account. Once sent, open the app, go to Deposit, enter the NGN amount you transferred and your transaction reference number. Your balance is credited in USD at the rate of ₦1,470 = $1 within 15–30 minutes after admin approval.</p>
+                </div>
+            </div>
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <div class="faq-q" onclick="toggleFaq(this)" aria-expanded="false" role="button" tabindex="0">
+                    <span itemprop="name">How are withdrawals processed?</span>
+                    <span class="icon" aria-hidden="true">+</span>
+                </div>
+                <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">Withdrawals are sent directly to your Nigerian bank account in NGN. The rate is $1 = ₦1,360. Minimum withdrawal is $1.00. You'll provide your bank name, account number and account name. Admin processes withdrawals within 24 hours.</p>
+                </div>
+            </div>
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <div class="faq-q" onclick="toggleFaq(this)" aria-expanded="false" role="button" tabindex="0">
+                    <span itemprop="name">What happens when my bot plan ends?</span>
+                    <span class="icon" aria-hidden="true">+</span>
+                </div>
+                <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">When your bot plan completes its duration (10, 20 or 30 days), your original capital is automatically returned to your account balance along with all accumulated daily ROI. You can then reinvest or withdraw immediately.</p>
+                </div>
+            </div>
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <div class="faq-q" onclick="toggleFaq(this)" aria-expanded="false" role="button" tabindex="0">
+                    <span itemprop="name">How does the referral program work?</span>
+                    <span class="icon" aria-hidden="true">+</span>
+                </div>
+                <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">Every user has a unique referral code found in the Referral section of the app. When someone signs up using your code, both you and the new user receive a $0.41 (equivalent to ₦600 at deposit rate) welcome bonus instantly credited to your accounts.</p>
+                </div>
+            </div>
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <div class="faq-q" onclick="toggleFaq(this)" aria-expanded="false" role="button" tabindex="0">
+                    <span itemprop="name">Is there a minimum deposit amount?</span>
+                    <span class="icon" aria-hidden="true">+</span>
+                </div>
+                <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">There is no platform minimum deposit — you can deposit any amount in NGN. However, each bot plan has its own minimum investment: Bot Alpha starts at $2.04 (≈₦3,000), Bot Sigma at $17.01 (≈₦25,000), and Bot Omega at $102.04 (≈₦150,000).</p>
+                </div>
+            </div>
+            <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <div class="faq-q" onclick="toggleFaq(this)" aria-expanded="false" role="button" tabindex="0">
+                    <span itemprop="name">Can I run multiple bots at the same time?</span>
+                    <span class="icon" aria-hidden="true">+</span>
+                </div>
+                <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <p itemprop="text">Yes. You can activate multiple bot plans simultaneously as long as you have sufficient balance. The dashboard shows all running bots with individual progress bars and earned totals. Each bot runs independently.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══ CTA ════════════════════════════════════════════════════════════════════ -->
+<section id="cta" aria-labelledby="cta-title">
+    <div class="cta-glow" aria-hidden="true"></div>
+    <div class="container">
+        <span class="tag">Get Started</span>
+        <h2 id="cta-title" class="cta-title">Your bots are<br>waiting</h2>
+        <p class="cta-desc">Join DXTRADE today. Create your free account, deposit via Opay, and let the bots earn for you around the clock.</p>
+        <div class="cta-actions">
+            <a href="dxtrade.html" class="btn-cta" aria-label="Create your free account">
+                Create Free Account
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="dxtrade.html" class="btn-ghost">Login to App</a>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════════════════════ -->
+<footer role="contentinfo">
+    <div class="container">
+        <div class="footer-disclaimer" role="note">
+            ⚠️ <strong>Risk Disclaimer:</strong> Trading and investment activities involve risk. Past performance is not indicative of future results. Only invest what you can afford to lose. DXTRADE does not guarantee profits. This platform is for informational and entertainment purposes. Ensure you understand the risks involved before investing.
+        </div>
+        <div class="footer-top">
+            <div>
+                <a href="/" class="nav-logo" style="font-size:20px;" aria-label="DXTRADE Home">DXTRADE</a>
+                <p class="footer-brand-desc">AI-powered automated bot trading platform. Deposit in Naira, earn in dollars, withdraw to your Nigerian bank account.</p>
+            </div>
+            <nav aria-label="Platform links">
+                <div class="footer-col-title">Platform</div>
+                <ul class="footer-links">
+                    <li><a href="dxtrade.html">Dashboard</a></li>
+                    <li><a href="dxtrade.html">Bot Marketplace</a></li>
+                    <li><a href="dxtrade.html">Deposit</a></li>
+                    <li><a href="dxtrade.html">Withdraw</a></li>
+                    <li><a href="dxtrade.html">Referral Program</a></li>
+                </ul>
+            </nav>
+            <nav aria-label="Company links">
+                <div class="footer-col-title">Company</div>
+                <ul class="footer-links">
+                    <li><a href="#features">About</a></li>
+                    <li><a href="#how">How It Works</a></li>
+                    <li><a href="#plans">Pricing</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+            <nav aria-label="Legal links">
+                <div class="footer-col-title">Legal</div>
+                <ul class="footer-links">
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Risk Disclosure</a></li>
+                    <li><a href="#">Cookies Policy</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 DXTRADE. All rights reserved.</span>
+            <div class="footer-legal">
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+                <a href="#">Risk</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ═══ JAVASCRIPT ════════════════════════════════════════════════════════════ -->
+<script>
+    // Nav scroll effect
+    window.addEventListener('scroll', () => {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Mobile menu
+    function toggleMenu() {
+        const m = document.getElementById('mobile-menu');
+        m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    // FAQ accordion
+    function toggleFaq(el) {
+        const item = el.parentElement;
+        const isOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(i => {
+            i.classList.remove('open');
+            i.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+        });
+        // Open clicked (if it wasn't open)
+        if (!isOpen) {
+            item.classList.add('open');
+            el.setAttribute('aria-expanded', 'true');
+        }
+    }
+    // Keyboard support for FAQ
+    document.querySelectorAll('.faq-q').forEach(q => {
+        q.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFaq(q); } });
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
